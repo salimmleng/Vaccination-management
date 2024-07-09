@@ -48,13 +48,6 @@ INSTALLED_APPS = [
     'patient',
     
 ]
-REST_FRAMEWORK = {
-    
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-    
-}
 
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
