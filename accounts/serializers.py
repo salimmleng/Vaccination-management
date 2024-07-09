@@ -1,6 +1,7 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from patient.models import Patient
 
 User = get_user_model()
 
@@ -11,12 +12,11 @@ class CustomRegisterSerializer(RegisterSerializer):
     ]
     role = serializers.ChoiceField(choices=ROLES)
     nid = serializers.CharField(unique=True)
-    license_number = serializers.CharField(required=False)
 
-    def validate_nid(self, data):
-        if User.objects.filter(nid=data).exists():
+    def validate_nid(self, value):
+        if User.objects.filter(nid=value).exists():
             raise serializers.ValidationError("A user already exists")
-        return data
+        return value
 
         
 
@@ -33,3 +33,11 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.nid = self.cleaned_data.get('nid')
         user.save()
         return user
+
+
+
+
+
+   
+    
+    

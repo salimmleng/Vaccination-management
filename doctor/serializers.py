@@ -5,3 +5,9 @@ class VaccineSerializers(serializers.ModelSerializer):
         model = models.Vaccine
         fields = '__all__'
         
+
+class DoctorSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = models.Doctor
+        fields = '__all__'
+        
