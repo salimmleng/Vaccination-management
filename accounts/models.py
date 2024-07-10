@@ -7,11 +7,20 @@ class CustomUser(AbstractUser):
         ('patient','Patient'),
         ('doctor','Doctor'),
     ]
-    role = models.CharField(max_length=30,choices=ROLES,default='patient')
+    role = models.CharField(max_length=30,choices=ROLES)
     nid = models.CharField(max_length=30,unique=True,blank=True,null=True)
    
-    
 
     def __str__(self):
         return self.username
 
+
+
+# mod
+
+class PatientProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    # Add other patient-specific fields
+
+class DoctorProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

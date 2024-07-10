@@ -12,3 +12,5 @@ class VaccineViewSet(viewsets.ModelViewSet):
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = models.Doctor.objects.all()
     serializer_class = serializers.DoctorSerializers
+
+    

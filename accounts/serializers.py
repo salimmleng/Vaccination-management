@@ -1,43 +1,53 @@
-from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from patient.models import Patient
+from .models import CustomUser, PatientProfile, DoctorProfile
 
-User = get_user_model()
+class PatientProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientProfile
+        fields = '__all__'
 
-class CustomRegisterSerializer(RegisterSerializer):
-    ROLES=[
-        ('patient','Patient'),
-        ('doctor','Doctor'),
-    ]
-    role = serializers.ChoiceField(choices=ROLES)
-    nid = serializers.CharField(unique=True)
+class DoctorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorProfile
+        fields = '__all__'
 
-    def validate_nid(self, value):
-        if User.objects.filter(nid=value).exists():
-            raise serializers.ValidationError("A user already exists")
-        return value
+class RegistrationSerializer(serializers.ModelSerializer):
+    confirm_password = serializers.CharField(required=True)
+    role = serializers.ChoiceField(choices=CustomUser.ROLES)
 
-        
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'role', 'nid']
 
-    def get_cleaned_data(self):
-        data = super().get_cleaned_data()
-        data['role'] = self.validated_data.get('role', '')
-        data['nid'] = self.validated_data.get('nid', '')
-        print('Role selected:',data['role'])
-        return data
+    def save(self):
+        username = self.validated_data['username']
+        first_name = self.validated_data['first_name']
+        last_name = self.validated_data['last_name']
+        email = self.validated_data['email']
+        password = self.validated_data['password']
+        confirm_password = self.validated_data['confirm_password']
+        role = self.validated_data['role']
+        nid = self.validated_data['nid']
 
-    def save(self, request):
-        user = super().save(request)
-        user.role = self.cleaned_data.get('role')
-        user.nid = self.cleaned_data.get('nid')
-        user.save()
-        return user
+        if password != confirm_password:
+            raise serializers.ValidationError({'error': "Passwords don't match"})
+        if CustomUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError({'error': "Email already exists"})
+        if CustomUser.objects.filter(nid=nid).exists():
+            raise serializers.ValidationError({'error': "NID already exists"})
 
+        account = CustomUser(username=username, first_name=first_name, last_name=last_name, email=email, role=role, nid=nid)
+        account.set_password(password)
+        account.is_active = False
+        account.save()
 
+        if role == 'patient':
+            PatientProfile.objects.create(user=account)
+        elif role == 'doctor':
+            DoctorProfile.objects.create(user=account)
 
+        return account
 
-
-   
-    
-    
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
