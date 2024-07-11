@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-m7o0j1vg35)v&v%umsa@wg-d1pkw)t9&p!o19odc4lh&j31vsy
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True 
 
 
 # Application definition
@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'accounts',
     'doctor',
     'patient',
+
+    # new
+
+    'corsheaders',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -72,6 +76,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'accounts.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
