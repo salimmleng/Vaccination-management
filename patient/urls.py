@@ -1,14 +1,7 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .import views
-
-router = DefaultRouter() 
-router.register('list', views.PatientViewSet) 
+from django.urls import path
+from .views import AvailableDatesView, DoseBookingView
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('register/',views.UserRegistrationApiView.as_view(), name='register'),
-     path('login/',views.UserLoginApiView.as_view(), name='login'),
-    path('active/<uid64>/<token>/',views.activate, name ='activate'),
+    path('available-dates/', AvailableDatesView.as_view(), name='available-dates'),
+    path('book-dose/', DoseBookingView.as_view(), name='book-dose'),
 ]
-

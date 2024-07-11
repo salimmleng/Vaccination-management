@@ -73,7 +73,7 @@ class UserLogoutApiView(APIView):
 
 
 class UserProfileAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
@@ -105,7 +105,7 @@ class UserProfileAPIView(APIView):
         return Response(serializer.errors, status=400)
 
 class ChangePasswordAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         user = request.user

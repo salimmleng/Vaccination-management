@@ -1,97 +1,46 @@
 from django.shortcuts import render
 from django.shortcuts import render,redirect
 from rest_framework import viewsets
+from rest_framework.response import Response
 # Create your views here.
+from rest_framework import generics
+from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
+from .models import DoseBooking
+from doctor.models import VaccineSchedule 
+from .serializers import DoseBookingSerializer, AvailableDatesSerializer
+from datetime import timedelta
 
 from .import serializers
 from .import models 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from accounts.models import CustomUser
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate,login,logout
-
-
-# for sending email 
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-
 
 
 class PatientViewSet(viewsets.ModelViewSet):
 
-    queryset = models.Patient.objects.all() # data asbe
-    serializer_class = serializers.PatientSerializer # data j
+    queryset = models.Patient.objects.all() 
+    serializer_class = serializers.PatientSerializer
 
 
 
-class UserRegistrationApiView(APIView):
-    serializer_class = serializers.RegistrationSerializer
 
-    def post(self,request):
-        serializer = self.serializer_class(data=request.data)
+class AvailableDatesView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
 
-        if serializer.is_valid():
-            user = serializer.save()
-            print(user)
-            token = default_token_generator.make_token(user)
-            print('Token', token)
+    def get_queryset(self):
+        # For demonstration, we're using a static list of dates.
+        # In a real-world scenario, this could be fetched from the database.
+        return VaccineSchedule.objects.all()
 
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            print('Uid',uid)
-            confirm_link = f"http://127.0.0.1:8000/patient/active/{uid}/{token}"
-            email_subject = "confirm your email"
-            email_body = render_to_string('confirm_email.html',{'confirm_link': confirm_link})
+    def list(self, request, *args, **kwargs):
+        available_dates = ["2024-07-23", "2024-07-24", "2024-07-25"]
+        serializer = AvailableDatesSerializer({"available_dates": available_dates})
+        return Response(serializer.data)
 
-            email = EmailMultiAlternatives(email_subject,'',to=[user.email])
-            email.attach_alternative(email_body,"text/html")
-            email.send()
-            return Response("Check your mail for confirmation")
-        return Response(serializer.errors)
+class DoseBookingView(generics.CreateAPIView):
+    queryset = DoseBooking.objects.all()
+    serializer_class = DoseBookingSerializer
+    permission_classes = [IsAuthenticated]
 
+    def perform_create(self, serializer):
+        serializer.save(patient=self.request.user)
 
-
-def activate(request,uid64,token):
-
-    try:
-        uid = urlsafe_base64_decode(uid64).decode()
-        user = CustomUser._default_manager.get(pk=uid)
-    except(CustomUser.DoesNotExist):
-
-        user  = None
-
-    if user is not None and default_token_generator.check_token(user,token):
-        user.is_active = True
-        user.save()
-        return redirect("login")
-    else:
-        return redirect("register")
-    
-
-
-
-class UserLoginApiView(APIView):
-
-    def post(self,request):
-
-        serializer = serializers.UserloginSerializer(data=self.request.data)
-        if serializer.is_valid():
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
-
-            user = authenticate(username=username,password=password)
-
-            if user:
-                token, _ = Token.objects.get_or_create(user=user)
-                login(request,user)
-                return Response({"token": token.key, 'user_id': user.id})
-            else:
-               
-                return redirect('login')
-            
-        else:
-            return Response(serializer.errors)
-        

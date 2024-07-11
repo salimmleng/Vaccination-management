@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from accounts.models import CustomUser
+from rest_framework import serializers
+from .models import DoseBooking
+from doctor.models import VaccineSchedule
+from datetime import timedelta
 
 from .import models
 
@@ -10,34 +14,24 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(required = True)
- 
+class DoseBookingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser 
-        fields = ['username','first_name','last_name','email','nid','password','confirm_password']
+        model = DoseBooking
+        fields = ['id', 'patient', 'vaccine_schedule', 'first_dose_date', 'second_dose_date', 'booked_at']
+        read_only_fields = ['second_dose_date', 'booked_at']
 
-    def save(self):
-        username = self.validated_data["username"]
-        first_name = self.validated_data["first_name"]
-        last_name = self.validated_data["last_name"]
-        email = self.validated_data["email"]
-        password = self.validated_data["password"]
-        confirm_password = self.validated_data["confirm_password"]
+    def validate_first_dose_date(self, value):
+        # You can add any additional validation for the first dose date here
+        return value
 
-        if password != confirm_password:
-            raise serializers.ValidationError({'error': "password doesn't match"})
-        if CustomUser.objects.filter(email = email).exists():
-            raise serializers.ValidationError({'error': "Email already exists"})
-        
-        account = CustomUser(username=username,first_name=first_name,last_name=last_name,email=email)
-
-        account.set_password(password)
-        account.is_active = False
-        account.save()
-        return account
+    def create(self, validated_data):
+        first_dose_date = validated_data['first_dose_date']
+        validated_data['second_dose_date'] = first_dose_date + timedelta(days=28) 
+        return super().create(validated_data)
 
 
-class UserloginSerializer(serializers.Serializer):
-    username = serializers.CharField(required = True)
-    password = serializers.CharField(required = True)
+class AvailableDatesSerializer(serializers.Serializer):
+    available_dates = serializers.ListField(
+        child=serializers.DateField()
+    )
+
