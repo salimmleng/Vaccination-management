@@ -13,6 +13,8 @@ defusedxml
 dj-database-url
 dj-rest-auth
 Django
+django-allauth
+django-cors-headers
 django-crispy-forms
 django-environ
 django-filter
@@ -69,7 +71,6 @@ sqlparse
 trio
 trio-websocket
 typing_extensions
-tzdata
 tzdata
 urllib3
 webdriver-manager
