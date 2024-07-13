@@ -32,6 +32,7 @@ class VaccineViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
+
 class VaccineScheduleViewSet(viewsets.ModelViewSet):
     queryset = VaccineSchedule.objects.all()
     serializer_class = VaccineScheduleSerializer

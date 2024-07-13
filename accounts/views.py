@@ -26,7 +26,7 @@ class UserRegistrationAPIView(APIView):
             user = serializer.save()
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"https://vaccination-management-2oph.onrender.com/accounts/activate/{uid}/{token}"
+            confirm_link = f"http://127.0.0.1:8000/accounts/active/{uid}/{token}"
             email_subject = "Confirm your email"
             email_body = render_to_string('confirm_email.html', {'confirm_link': confirm_link})
             email = EmailMultiAlternatives(email_subject, '', to=[user.email])
@@ -48,6 +48,9 @@ def activate(request, uid64, token):
         return redirect("login")
     else:
         return redirect("register")
+
+
+
 
 class UserLoginApiView(APIView):
     permission_classes = [AllowAny] 
@@ -104,6 +107,7 @@ class UserProfileAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+
 class ChangePasswordAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -113,3 +117,6 @@ class ChangePasswordAPIView(APIView):
         user.set_password(new_password)
         user.save()
         return Response({'message': 'Password changed successfully'}, status=200)
+
+
+
