@@ -20,7 +20,8 @@ class CustomUser(AbstractUser):
 
 class PatientProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    # Add other patient-specific fields
-
+   
 class DoctorProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+

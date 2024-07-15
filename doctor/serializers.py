@@ -21,9 +21,12 @@ from .models import Vaccine, VaccineSchedule
 class VaccineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vaccine
-        fields = ['id', 'name', 'created_at', 'created_by']
+        fields = ['id', 'image', 'name', 'manufacturer','batch_number','expiry_date', 'created_at', 'created_by']
+        read_only_fields = ['created_by',]
+
 
 class VaccineScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = VaccineSchedule
-        fields = ['id', 'vaccine', 'date', 'doctor', 'notes']
+        fields = ['id', 'patient_name','doctor','created_at', 'scheduled_date']  # Example fields; adjust as per your model
+        read_only_fields = ['doctor']  # If doctor_name should be read-only

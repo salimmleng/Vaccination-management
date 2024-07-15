@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from .models import CustomUser, PatientProfile, DoctorProfile
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'role', 'nid']
+
 class PatientProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientProfile
