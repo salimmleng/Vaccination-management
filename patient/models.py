@@ -20,3 +20,6 @@ class DoseBooking(models.Model):
     first_dose_date = models.DateField()
     second_dose_date = models.DateField()
     booked_at = models.DateTimeField(auto_now_add=True)
+
+
+    

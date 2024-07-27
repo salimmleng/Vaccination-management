@@ -13,13 +13,14 @@
 # mod 
 
 from django.urls import path, include
-from .views import VaccineViewSet,VaccineScheduleListCreate,VaccineScheduleDetail
+from .views import VaccineViewSet,VaccineDetailViewSet
 
 urlpatterns = [
    
     path('api/vaccines/',VaccineViewSet.as_view(), name='add_vaccine'),
-    path('vaccine-schedules/', VaccineScheduleListCreate.as_view(), name='vaccine-schedule-list-create'),
-    path('vaccine-schedules/<int:pk>/', VaccineScheduleDetail.as_view(), name='vaccine-schedule-detail'),
+    path('api/vaccines/<int:pk>/',VaccineDetailViewSet.as_view(), name='add_vaccine'),
+    # path('vaccine-schedules/', VaccineScheduleListCreate.as_view(), name='vaccine-schedule-list-create'),
+    # path('vaccine-schedules/<int:pk>/', VaccineScheduleDetail.as_view(), name='vaccine-schedule-detail'),
 ]
 
 

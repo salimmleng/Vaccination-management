@@ -43,7 +43,6 @@ class Vaccine(models.Model):
 
 class VaccineSchedule(models.Model):
     vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE, related_name='schedules')
-   
     doctor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='vaccine_schedules')
     patient_name = models.CharField(max_length=100,default="anything")
     scheduled_date = models.DateField()
@@ -51,3 +50,6 @@ class VaccineSchedule(models.Model):
 
     def __str__(self):
         return f"{self.vaccine.name} on {self.scheduled_date}"
+
+
+

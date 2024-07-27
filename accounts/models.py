@@ -7,8 +7,10 @@ class CustomUser(AbstractUser):
         ('patient','Patient'),
         ('doctor','Doctor'),
     ]
-    role = models.CharField(max_length=30,choices=ROLES)
+
+    user_role = models.CharField(max_length=50,choices=ROLES,null=True,blank=True)
     nid = models.CharField(max_length=30,unique=True,blank=True,null=True)
+    address = models.CharField(max_length=100,blank=True,null=True)
    
 
     def __str__(self):

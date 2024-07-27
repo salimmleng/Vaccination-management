@@ -10,6 +10,9 @@ from .models import DoseBooking
 from doctor.models import VaccineSchedule 
 from .serializers import DoseBookingSerializer, AvailableDatesSerializer
 from datetime import timedelta
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 from .import serializers
 from .import models 
@@ -36,11 +39,35 @@ class AvailableDatesView(generics.ListAPIView):
         serializer = AvailableDatesSerializer({"available_dates": available_dates})
         return Response(serializer.data)
 
-class DoseBookingView(generics.CreateAPIView):
-    queryset = DoseBooking.objects.all()
-    serializer_class = DoseBookingSerializer
+
+
+# class DoseBookingView(generics.CreateAPIView):
+#     queryset = DoseBooking.objects.all()
+#     serializer_class = DoseBookingSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def perform_create(self, serializer):
+#         serializer.save(patient=self.request.user)
+
+class BookDoseView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(patient=self.request.user)
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        dose_bookings = DoseBooking.objects.filter(patient=user)
+        serializer = DoseBookingSerializer(dose_bookings, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data.copy()
+        data['patient'] = user.id
+
+        serializer = DoseBookingSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"success": True, "message": "Dose booking request sent.", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
 

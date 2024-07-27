@@ -21,14 +21,13 @@ class DoseBookingSerializer(serializers.ModelSerializer):
         read_only_fields = ['second_dose_date', 'booked_at']
 
     def validate_first_dose_date(self, value):
-        # You can add any additional validation for the first dose date here
+        # Add any validation logic for the first dose date if necessary
         return value
 
     def create(self, validated_data):
         first_dose_date = validated_data['first_dose_date']
-        validated_data['second_dose_date'] = first_dose_date + timedelta(days=28) 
+        validated_data['second_dose_date'] = first_dose_date + timedelta(days=28)  # Automatically set the second dose date
         return super().create(validated_data)
-
 
 class AvailableDatesSerializer(serializers.Serializer):
     available_dates = serializers.ListField(
