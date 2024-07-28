@@ -19,8 +19,6 @@ urlpatterns = [
    
     path('api/vaccines/',VaccineViewSet.as_view(), name='add_vaccine'),
     path('api/vaccines/<int:pk>/',VaccineDetailViewSet.as_view(), name='add_vaccine'),
-    # path('vaccine-schedules/', VaccineScheduleListCreate.as_view(), name='vaccine-schedule-list-create'),
-    # path('vaccine-schedules/<int:pk>/', VaccineScheduleDetail.as_view(), name='vaccine-schedule-detail'),
 ]
 
 

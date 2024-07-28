@@ -1,4 +1,5 @@
 from django.contrib import admin
-from .models import DoseBooking
+from .models import Dose
 # Register your models here.
-admin.site.register(DoseBooking)
+
+admin.site.register(Dose)

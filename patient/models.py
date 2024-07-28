@@ -1,25 +1,32 @@
 from django.db import models
-from accounts.models import CustomUser
-from doctor.models import VaccineSchedule
-# Create your models here.
+from django.conf import settings
+from doctor.models import Vaccine
+from datetime import timedelta, date
 
-class Patient(models.Model):
-    user = models.OneToOneField(CustomUser ,on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="patient/images/")
-    mobile_no = models.CharField(max_length=12)
+class Dose(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
+    dose_number = models.IntegerField()  # 1 for first dose, 2 for second dose
+    scheduled_date = models.DateField()
+    administered_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}" 
-    
+        return f"{self.user} - Dose {self.dose_number} of {self.vaccine.name}"
 
-# mod
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.dose_number == 1 and not Dose.objects.filter(user=self.user, dose_number=2, vaccine=self.vaccine).exists():
+            self.schedule_second_dose()
 
-class DoseBooking(models.Model):
-    patient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='dose_bookings')
-    vaccine_schedule = models.ForeignKey(VaccineSchedule, on_delete=models.CASCADE)
-    first_dose_date = models.DateField()
-    second_dose_date = models.DateField()
-    booked_at = models.DateTimeField(auto_now_add=True)
+    def schedule_second_dose(self):
+        second_dose_date = self.scheduled_date + timedelta(days=21)  # Adjust the days as per your requirement
+        Dose.objects.create(
+            user=self.user,
+            vaccine=self.vaccine,
+            dose_number=2,
+            scheduled_date=second_dose_date
+        )
 
 
-    
