@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 
 from . import serializers
 from . import models
@@ -109,6 +110,7 @@ class UserLogoutApiView(APIView):
 #         return Response(serializer.errors, status=400)
 
 
+
 class ChangePasswordAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -120,10 +122,23 @@ class ChangePasswordAPIView(APIView):
         return Response({'message': 'Password changed successfully'}, status=200)
 
 
+
+
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, format=None):
         user = get_object_or_404(models.CustomUser, pk=pk)
         serializer = serializers.UserSerializer(user)
         return Response(serializer.data)
+    
+
+    def put(self, request, pk, format=None):
+        user = get_object_or_404(models.CustomUser, pk=pk)
+        serializer = serializers.UserSerializer(user, data=request.data, partial=True)  # partial=True allows for partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
