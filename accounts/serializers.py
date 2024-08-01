@@ -23,11 +23,11 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
-    # user_role = serializers.ChoiceField(choices=CustomUser.ROLES)
+    user_role = serializers.ChoiceField(choices=CustomUser.ROLES)
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name', 'last_name', 'email', 'address', 'nid', 'password', 'confirm_password']
+        fields = ['username', 'first_name', 'last_name', 'email', 'address', 'nid', 'user_role', 'password', 'confirm_password']
 
     def validate(self, data):
         if data['password'] != data['confirm_password']:
@@ -47,7 +47,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             address=validated_data['address'],
             nid=validated_data['nid'],
-            # user_role=validated_data['user_role'],
+            user_role=validated_data['user_role'],
         )
         user.set_password(validated_data['password'])
         user.is_active = False

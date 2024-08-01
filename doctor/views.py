@@ -2,21 +2,25 @@
 
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsOwnerOrReadOnly
 from .serializers import VaccineSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from .models import Vaccine
+from .permissions import IsDoctor
 
 
 class VaccineViewSet(APIView):
    
-    # serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
-    # permission_classes = [IsAuthorOrReadOnly]
-    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated(), IsDoctor()]  # Doctors can POST
+        return [IsAuthenticated()]  # Patients can GET only
+
+
     def get(self, request, format=None):
         vaccines = Vaccine.objects.all()
         serializer = VaccineSerializer(vaccines, many=True)
@@ -34,6 +38,7 @@ class VaccineViewSet(APIView):
 
 
 class VaccineDetailViewSet(APIView):
+    permission_classes = [IsAuthenticated, IsDoctor]
 
     def get_object(self, pk):
         try:
