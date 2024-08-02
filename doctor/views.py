@@ -38,7 +38,7 @@ class VaccineViewSet(APIView):
 
 
 class VaccineDetailViewSet(APIView):
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, pk):
         try:

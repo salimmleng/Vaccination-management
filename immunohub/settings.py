@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'accounts',
     'doctor',
-    'patient',
+    'vaccine',
 
     # new
 
