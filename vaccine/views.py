@@ -29,7 +29,8 @@ class DoseListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        doses = Dose.objects.filter(user=request.user)
+        # doses = Dose.objects.filter(user=request.user)
+        doses = Dose.objects.all()
         serializer = DoseSerializer(doses, many=True)
         return Response(serializer.data)
 
