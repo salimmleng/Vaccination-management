@@ -29,10 +29,14 @@ class DoseListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # doses = Dose.objects.filter(user=request.user)
-        doses = Dose.objects.all()
+        if request.user.user_role == 'doctor':
+            doses = Dose.objects.all()
+        else:
+            doses = Dose.objects.filter(user=request.user)
+        
         serializer = DoseSerializer(doses, many=True)
         return Response(serializer.data)
+
 
     def post(self, request):
         data = request.data.copy()
@@ -64,6 +68,28 @@ class DoseListCreateView(APIView):
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+
+
+
+    def patch(self, request):
+        if request.user.user_role != 'doctor':
+            return Response({"error": "Only doctors can perform bulk updates."}, status=status.HTTP_403_FORBIDDEN)
+
+        data = request.data
+        for item in data:
+            try:
+                dose = Dose.objects.get(pk=item['id'])
+                serializer = DoseSerializer(dose, data=item, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except Dose.DoesNotExist:
+                return Response({"error": f"Dose with id {item['id']} not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        return Response({"message": "Doses updated successfully"}, status=status.HTTP_200_OK)
+
 
 
 
@@ -72,7 +98,10 @@ class DoseDetailView(APIView):
 
     def get_object(self, pk, user):
         try:
-            return Dose.objects.get(pk=pk, user=user)
+            if user.user_role == 'doctor':
+                return Dose.objects.get(pk=pk)
+            else:
+                return Dose.objects.get(pk=pk, user=user)
         except Dose.DoesNotExist:
             raise Http404
 
@@ -102,6 +131,8 @@ class DoseDetailView(APIView):
         dose = self.get_object(pk, request.user)
         dose.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
 
 
 
