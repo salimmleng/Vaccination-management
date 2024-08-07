@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import AvailableHospital, AvailableDates, Dose
-from .serializers import AvailableHospitalSerializer, AvailableDatesSerializer, DoseSerializer
+from .serializers import AvailableHospitalSerializer, AvailableDatesSerializer, DoseSerializer,ReviewSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -134,6 +134,16 @@ class DoseDetailView(APIView):
     
 
 
+
+class ReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

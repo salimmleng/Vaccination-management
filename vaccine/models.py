@@ -38,4 +38,26 @@ class Dose(models.Model):
         return f"{self.user} - {self.vaccine.name}"
     
 
-    
+
+STAR_CHOICES =[
+    ('⭐','⭐'),
+    ('⭐⭐','⭐⭐'),
+    ('⭐⭐⭐','⭐⭐⭐'),
+    ('⭐⭐⭐⭐','⭐⭐⭐⭐'),
+    ('⭐⭐⭐⭐⭐','⭐⭐⭐⭐⭐'),
+]
+
+
+
+class Review(models.Model):
+
+    reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    rating = models.CharField(max_length=50,choices=STAR_CHOICES)
+
+
+    def __str__(self):
+        return f"Patient: {self.reviewer.first_name} on Vaccine: {self.vaccine.name} "
+

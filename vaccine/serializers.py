@@ -1,37 +1,7 @@
-# from rest_framework import serializers
-# from accounts.models import CustomUser
-# from rest_framework import serializers
-# from datetime import timedelta
-
-# # serializers.py in patient app
-# from rest_framework import serializers
-# from .models import Dose,AvailableHospital,AvailableDates
-
-# class DoseSerializer(serializers.ModelSerializer):
-#     user = serializers.StringRelatedField(many=False)
-#     vaccine = serializers.StringRelatedField(many=False)
-#     vaccine_center = serializers.StringRelatedField(many=False)
-#     firstDose_date = serializers.SlugRelatedField(slug_field='date', queryset=AvailableDates.objects.all())
-#     secondDose_date = serializers.SlugRelatedField(slug_field='date', queryset=AvailableDates.objects.all(), required=False)
-
-#     class Meta:
-#         model = Dose
-#         fields = '__all__'
-
-        
-# class AvailableHospitalSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = AvailableHospital
-#         fields ='__all__'
-
-# class AvailableDatesSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = AvailableDates
-#         fields ='__all__'
 
 
 from rest_framework import serializers
-from .models import Dose, AvailableDates, AvailableHospital
+from .models import Dose, AvailableDates, AvailableHospital,Review
 from doctor.models import Vaccine
 from accounts.models import CustomUser
 
@@ -75,3 +45,9 @@ class DoseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dose
         fields = '__all__'
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields ='__all__'
