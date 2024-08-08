@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import AvailableHospital, AvailableDates, Dose
+from .models import AvailableHospital, AvailableDates, Dose,Review
 from .serializers import AvailableHospitalSerializer, AvailableDatesSerializer, DoseSerializer,ReviewSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -141,9 +141,24 @@ class ReviewView(APIView):
     def post(self, request, format=None):
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(reviewer=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    # def get(self, request, vaccine_id, format=None):
+    #     reviews = Review.objects.filter(vaccine_id=vaccine_id)
+    #     serializer = ReviewSerializer(reviews, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get(self, request, vaccine_id=None, format=None):
+        if vaccine_id is not None:
+            reviews = Review.objects.filter(vaccine_id=vaccine_id)
+        else:
+            reviews = Review.objects.all()
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 

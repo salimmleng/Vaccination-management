@@ -48,6 +48,11 @@ class DoseSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    reviewer = UserSerializer(read_only=True)
+    vaccine = VaccineSerializer(read_only=True)
+    vaccine_id = serializers.PrimaryKeyRelatedField(
+        queryset=Vaccine.objects.all(), source='vaccine', write_only=True)
+  
     class Meta:
         model = Review
-        fields ='__all__'
+        fields = '__all__'

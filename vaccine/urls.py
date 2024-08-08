@@ -21,5 +21,6 @@ urlpatterns = [
     path('api/available_hospitals/', AvailableHospitalListView.as_view(), name='available-hospitals-list'),
     path('api/available_dates/', AvailableDatesListView.as_view(), name='available-dates-list'),
     path('reviews/', ReviewView.as_view(), name='review-create'),
+    path('reviews/<int:vaccine_id>/', ReviewView.as_view(), name='review-create'),
 ]
 
