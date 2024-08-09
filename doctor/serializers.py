@@ -5,6 +5,6 @@ from .models import Vaccine
 class VaccineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vaccine
-        fields = ['id', 'image', 'name', 'manufacturer','batch_number','expiry_date', 'created_at', 'created_by']
+        fields = ['id', 'image', 'name', 'manufacturer','batch_number','expiry_date', 'age_limit', 'created_at', 'created_by']
         read_only_fields = ['created_by',]
 
