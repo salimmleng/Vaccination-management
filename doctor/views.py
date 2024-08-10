@@ -1,5 +1,4 @@
 
-
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
 from .serializers import VaccineSerializer
@@ -14,8 +13,6 @@ from .permissions import AllowAnyGet
 
 class VaccineViewSet(APIView):
    
-    # permission_classes = [IsAuthenticated]
-
     def get_permissions(self):
         if self.request.method == 'POST':
             return [IsAuthenticated(), IsDoctor()]  # Doctors can POST
@@ -39,8 +36,7 @@ class VaccineViewSet(APIView):
 
 
 class VaccineDetailViewSet(APIView):
-    # permission_classes = [IsAuthenticated]
-
+   
     def get_object(self, pk):
         try:
             return Vaccine.objects.get(pk=pk)

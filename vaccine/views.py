@@ -145,12 +145,7 @@ class ReviewView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
-    # def get(self, request, vaccine_id, format=None):
-    #     reviews = Review.objects.filter(vaccine_id=vaccine_id)
-    #     serializer = ReviewSerializer(reviews, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
+   
     def get(self, request, vaccine_id=None, format=None):
         if vaccine_id is not None:
             reviews = Review.objects.filter(vaccine_id=vaccine_id)

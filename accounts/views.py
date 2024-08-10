@@ -77,37 +77,37 @@ class UserLogoutApiView(APIView):
         return redirect('login')
 
 
-# class UserProfileAPIView(APIView):
-#     permission_classes = [IsAuthenticated]
+class UserProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def get(self, request):
-#         user = request.user
-#         if user.role == 'patient':
-#             profile = models.PatientProfile.objects.get(user=user)
-#             serializer = serializers.PatientProfileSerializer(profile)
-#         elif user.role == 'doctor':
-#             profile = models.DoctorProfile.objects.get(user=user)
-#             serializer = serializers.DoctorProfileSerializer(profile)
-#         else:
-#             return Response({'error': 'Invalid role'}, status=400)
-#         return Response(serializer.data)
+    def get(self, request):
+        user = request.user
+        if user.user_role == 'patient':
+            profile = models.PatientProfile.objects.get(user=user)
+            serializer = serializers.PatientProfileSerializer(profile)
+        elif user.user_role == 'doctor':
+            profile = models.DoctorProfile.objects.get(user=user)
+            serializer = serializers.DoctorProfileSerializer(profile)
+        else:
+            return Response({'error': 'Invalid role'}, status=400)
+        return Response(serializer.data)
 
-#     def put(self, request):
-#         user = request.user
-#         if user.role == 'patient':
-#             profile = models.PatientProfile.objects.get(user=user)
-#             serializer = serializers.PatientProfileSerializer(profile, data=request.data, partial=True)
-#         elif user.role == 'doctor':
-#             profile = models.DoctorProfile.objects.get(user=user)
-#             serializer = serializers.DoctorProfileSerializer(profile, data=request.data, partial=True)
-#         else:
-#             return Response({'error': 'Invalid role'}, status=400)
+    def put(self, request):
+        user = request.user
+        if user.user_role == 'patient':
+            profile = models.PatientProfile.objects.get(user=user)
+            serializer = serializers.PatientProfileSerializer(profile, data=request.data)
+        elif user.user_role == 'doctor':
+            profile = models.DoctorProfile.objects.get(user=user)
+            serializer = serializers.DoctorProfileSerializer(profile, data=request.data)
+        else:
+            return Response({'error': 'Invalid role'}, status=400)
            
         
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=400)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
 
 
@@ -116,7 +116,17 @@ class ChangePasswordAPIView(APIView):
 
     def post(self, request):
         user = request.user
+        old_password = request.data.get('old_password')
         new_password = request.data.get('new_password')
+
+         # Check if the old password is correct
+        if not user.check_password(old_password):
+            return Response({'error': 'Old password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the new password is provided
+        if not new_password:
+            return Response({'error': 'New password is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
         user.set_password(new_password)
         user.save()
         return Response({'message': 'Password changed successfully'}, status=200)
@@ -125,7 +135,7 @@ class ChangePasswordAPIView(APIView):
 
 
 class UserProfileView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, format=None):
         user = get_object_or_404(models.CustomUser, pk=pk)
