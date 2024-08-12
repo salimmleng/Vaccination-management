@@ -115,15 +115,14 @@ class ChangePasswordAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        
         user = request.user
         old_password = request.data.get('old_password')
         new_password = request.data.get('new_password')
 
-         # Check if the old password is correct
         if not user.check_password(old_password):
             return Response({'error': 'Old password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the new password is provided
         if not new_password:
             return Response({'error': 'New password is required'}, status=status.HTTP_400_BAD_REQUEST)
         
