@@ -8,22 +8,6 @@ from rest_framework import status
 from django.http import Http404
 from datetime import timedelta,datetime
 
-# class AvailableHospitalViewSet(viewsets.ModelViewSet):
-#     queryset = AvailableHospital.objects.all()
-#     serializer_class = AvailableHospitalSerializer
-
-# class AvailableDatesViewSet(viewsets.ModelViewSet):
-   
-#     serializer_class = AvailableDatesSerializer
-
-# class DoseViewSet(viewsets.ModelViewSet):
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = DoseSerializer
-#     queryset = Dose.objects.all()
-    
-#     def get_queryset(self):
-#         return Dose.objects.filter(user=self.request.user)
-
 
 class DoseListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -46,13 +30,13 @@ class DoseListCreateView(APIView):
             try:
                 first_dose_date_obj = AvailableDates.objects.get(id=first_dose_date_id)
                 
-                # Calculate the second dose date
+                # second dose date
                 second_dose_date_value = first_dose_date_obj.date + timedelta(days=21)
                 
                 # Get or create the second dose date object
                 second_dose_date_obj, created = AvailableDates.objects.get_or_create(date=second_dose_date_value)
                 
-                # Set the date objects' IDs in the data
+                
                 data['firstDose_date_id'] = first_dose_date_obj.id
                 data['secondDose_date_id'] = second_dose_date_obj.id
             except AvailableDates.DoesNotExist:

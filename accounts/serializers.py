@@ -9,7 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-
 class PatientProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientProfile
