@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
 # Create your models here.
 
 class CustomUser(AbstractUser):
@@ -18,7 +19,7 @@ class CustomUser(AbstractUser):
 
 
 
-# mod
+
 
 class PatientProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

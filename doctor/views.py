@@ -16,7 +16,7 @@ class VaccineViewSet(APIView):
     def get_permissions(self):
         if self.request.method == 'POST':
             return [IsAuthenticated(), IsDoctor()]  # Doctors can POST
-        # return [IsAuthenticated()]  # Patients can GET only
+        
         return [AllowAnyGet()]
 
     def get(self, request, format=None):

@@ -21,6 +21,10 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
     user_role = serializers.ChoiceField(choices=CustomUser.ROLES)
@@ -59,3 +63,8 @@ class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
     user_role = serializers.CharField(read_only=True)
+
+
+
+
+
