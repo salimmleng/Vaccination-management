@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 import environ
 env = environ.Env()
 environ.Env.read_env()
@@ -23,15 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m7o0j1vg35)v&v%umsa@wg-d1pkw)t9&p!o19odc4lh&j31vsy'
+# SECRET_KEY = 'django-insecure-m7o0j1vg35)v&v%umsa@wg-d1pkw)t9&p!o19odc4lh&j31vsy'
 
+SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True 
 
-CSRF_TRUSTED_ORIGINS = ['https://vaccination-management-zii9.onrender.com']
+# CSRF_TRUSTED_ORIGINS = ['https://vaccination-management-zii9.onrender.com']
 
 
 # Application definition
@@ -110,12 +112,23 @@ WSGI_APPLICATION = 'immunohub.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://vaccine_management_sjix_user:1oX7j6pEUkaqlHqjlv43E0BJYMRtkzLN@dpg-cquesslsvqrc73bni210-a.oregon-postgres.render.com/vaccine_management_sjix',
+        
+    )
 }
+
+
 
 
 # Password validation
