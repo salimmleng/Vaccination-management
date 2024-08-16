@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
-import cloudinary_storage
 import dj_database_url
 import environ
 env = environ.Env()
@@ -53,11 +52,6 @@ INSTALLED_APPS = [
     'accounts',
     'doctor',
     'vaccine',
-    'cloudinary',
-    'cloudinary_storage',
-
-    # new
-
     'corsheaders',
 ]
 
@@ -185,12 +179,3 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-
-CLOUDINARY_STORAGE ={
-    'CLOUD_NAME': 'dgqej7fke',
-    "API_KEY": '797314292699999',
-    'API_SECRET': 'u9tpLtP6psopkNCu-Sz4MhPDTtM'
-}
-DEFAULT_FILE_STORAGE ='cloudinary_storage.storage.MediaCloudinaryStorage'
-
-

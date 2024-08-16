@@ -7,7 +7,7 @@ CustomUser = get_user_model()
 
 
 class Vaccine(models.Model):
-    image = models.ImageField(upload_to="vaccine-images",default='default.jpg')
+    image = models.ImageField(upload_to="doctor/images/",default='default.jpg')
     name = models.CharField(max_length=255)
     manufacturer = models.CharField(max_length=100,default='default-manufacturer')
     batch_number = models.CharField(max_length=100,default='default-batch-number')
