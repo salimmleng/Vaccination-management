@@ -48,9 +48,9 @@ class VaccineDetailViewSet(APIView):
         serializer = VaccineSerializer(vaccine)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         vaccine = self.get_object(pk)
-        serializer = VaccineSerializer(vaccine, data=request.data)
+        serializer = VaccineSerializer(vaccine, data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save(doctor=request.user)
             return Response(serializer.data)
