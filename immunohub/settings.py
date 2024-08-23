@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'doctor',
     'vaccine',
     'corsheaders',
+    'contact',
 ]
 
 AUTHENTICATION_BACKENDS = (
