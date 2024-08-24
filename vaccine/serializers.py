@@ -52,18 +52,13 @@ class ReviewSerializer(serializers.ModelSerializer):
     vaccine = VaccineSerializer(read_only=True)
     vaccine_id = serializers.PrimaryKeyRelatedField(
     queryset=Vaccine.objects.all(), source='vaccine', write_only=True)
-    rating_display = serializers.SerializerMethodField()
-
   
     class Meta:
         model = Review
-        fields = ['id', 'reviewer', 'vaccine', 'vaccine_id', 'comment', 'created_at', 'rating', 'rating_display']
-
-    def get_rating_display(self, obj):
-        return obj.get_rating_display()  # This will return the star string
+        fields = '__all__'
 
 
 
-
+        
 
 
