@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = 'django-insecure-m7o0j1vg35)v&v%umsa@wg-d1pkw)t9&p!o19odc4lh&j31vsy'
 
 SECRET_KEY='django-insecure-m7o0j1vg35)v&v%umsa@wg-d1pkw)t9&p!o19odc4lh&j31vsy'
-
+# SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -111,23 +111,21 @@ WSGI_APPLICATION = 'immunohub.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://vaccine_management_sjix_user:1oX7j6pEUkaqlHqjlv43E0BJYMRtkzLN@dpg-cquesslsvqrc73bni210-a.oregon-postgres.render.com/vaccine_management_sjix',
-        
-#     )
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
 # }
 
 
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://vaccine_r57a_user:2vLySWdDxlLzJIvrsvr4Gj4ddDzh8SbB@dpg-crm4e4jv2p9s73e8j4mg-a.oregon-postgres.render.com/vaccine_r57a',
+        
+    )
+}
 
 
 # Password validation
